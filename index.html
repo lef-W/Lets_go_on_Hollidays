@@ -15,25 +15,29 @@
             background-color: #fdf6f0;
             color: #4a3e3d;
             text-align: center;
+            overflow-x: hidden;
         }
         .container {
-            max-width: 600px;
-            margin: 60px auto;
+            max-width: 700px;
+            margin: 50px auto;
             background: #ffffff;
             padding: 40px 30px;
             border-radius: 20px;
             box-shadow: 0 10px 25px rgba(220, 180, 180, 0.3);
             border: 1px solid #f3e1dc;
+            position: relative;
+            z-index: 2;
         }
         h1 {
             color: #d46a75;
-            font-size: 24px;
+            font-size: 23px;
             margin-bottom: 25px;
             line-height: 1.4;
         }
         p {
             font-size: 16px;
             color: #7a6e6d;
+            line-height: 1.5;
         }
         .page {
             display: none;
@@ -72,47 +76,69 @@
             font-size: 45px;
             margin: 20px 0;
         }
-        /* Style et conteneur de l'animation */
-        .animation-container {
-            position: relative;
-            height: 180px;
-            overflow: hidden;
-            background-color: #f0f8ff;
+
+        /* --- STYLES DES CARTES INTERACTIVES --- */
+        .cards-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .card-choice {
+            flex: 1;
+            background: #fff;
+            border: 2px solid #f3e1dc;
             border-radius: 15px;
-            margin: 25px 0;
-            border: 1px dashed #b0c4de;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
-        .snowman {
-            position: absolute;
-            bottom: 15px;
-            left: -100px;
-            width: 90px;
-            height: auto;
-            animation: walkAround 7s linear infinite;
+        .card-choice:hover {
+            transform: translateY(-5px);
+            border-color: #ff8a93;
+            box-shadow: 0 8px 20px rgba(255, 138, 147, 0.15);
         }
-        .cool-text {
-            font-size: 32px;
-            color: #2b6cb0;
+        .card-choice.selected {
+            border-color: #ff8a93;
+            background-color: #fff5f5;
+            box-shadow: 0 8px 20px rgba(255, 138, 147, 0.25);
+        }
+        .card-img-placeholder {
+            width: 100%;
+            height: 140px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            background-size: cover;
+            background-position: center;
+        }
+        .card-title {
             font-weight: bold;
-            margin: 15px 0;
-            animation: pulse 1.5s infinite;
+            font-size: 18px;
+            color: #d46a75;
+            margin-bottom: 8px;
         }
-        /* Animation CSS pour faire voyager le bonhomme de neige d'un bout à l'autre */
-        @keyframes walkAround {
-            0% { left: -100px; transform: scaleX(1); }
-            45% { left: 110%; transform: scaleX(1); }
-            50% { left: 110%; transform: scaleX(-1); }
-            95% { left: -100px; transform: scaleX(-1); }
-            100% { left: -100px; transform: scaleX(1); }
+        .card-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
-            100% { transform: scale(1); }
+
+        /* --- CANVAS POUR L'ANIMATION BRICK BREAKER --- */
+        #bounceCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none; /* Permet de cliquer à travers sur les boutons */
+            display: none;
         }
     </style>
 </head>
 <body>
+
+<canvas id="bounceCanvas"></canvas>
 
 <div class="container">
 
@@ -129,7 +155,7 @@
         <div class="emoji-banner">🏖️ ☀️ 🌊</div>
         <div class="btn-group">
             <button onclick="nextPage('pageQ3')">Oui ! 😍</button>
-            <button class="secondary" onclick="nextPage('page_inter1')">Non 😢</button>
+            <button class="secondary" onclick="startFullscreenAnimation(); nextPage('page_inter1');">Non 😢</button>
         </div>
     </div>
 
@@ -137,7 +163,7 @@
         <h1>Êtes-vous sûre de ne pas vouloir partir avec moi ? 💔</h1>
         <div class="btn-group">
             <button onclick="nextPage('page_inter2')">Oui, sûre 🛑</button>
-            <button class="secondary" onclick="nextPage('page_anim_seule')">Non... 🤔</button>
+            <button class="secondary" onclick="nextPage('pageQ3')">Non... 🤔</button>
         </div>
     </div>
 
@@ -151,37 +177,58 @@
 
     <div id="page_forced" class="page">
         <h1>Bon en fait, vous n'avez pas trop le choix, vous partez en vacances avec moi ! ✈️🎒</h1>
-        <div class="cool-text">Trop cool !</div>
-        <div class="animation-container">
-            <img src="bonhomme-de-neige.png" alt="⛄" class="snowman" onerror="this.style.fontSize='60px'; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'></svg>';">
-        </div>
         <div class="btn-group">
             <button onclick="nextPage('pageQ3')">Découvrir la suite (Q3) 🎉</button>
         </div>
     </div>
 
-    <div id="page_anim_seule" class="page">
-        <div class="cool-text">Trop cool !</div>
-        <div class="animation-container">
-            <img src="bonhomme-de-neige.png" alt="⛄" class="snowman" onerror="this.style.fontSize='60px'; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'></svg>';">
-        </div>
-        <div class="btn-group">
-            <button onclick="nextPage('pageQ3')">Passer à la suite (Q3) 🚀</button>
-        </div>
-    </div>
-
     <div id="pageQ3" class="page">
-        <h1>Bienvenue à la Question 3 ! 🎉</h1>
-        <p>Félicitations, vos valises sont prêtes pour le départ ! ✨</p>
-        <div class="btn-group">
-            <button onclick="alert('À vous de jouer pour écrire la suite de l\'histoire !')">À suivre...</button>
+        <h1>Je propose une randonnée du samedi 1er août au lundi 3 ou mardi 4 août 🧭</h1>
+        <p style="font-weight: bold; color: #ff8a93; margin-top: -10px;">(deux jours après la fin de ton camp)</p>
+        <h2 style="color: #4a3e3d; font-size: 21px; margin-top: 25px;">Y a une situation qui te fait rêver ? ✨</h2>
+
+        <div class="cards-container">
+            <div class="card-choice" onclick="selectCard(this, 'La Bretagne 🌊')">
+                <div class="card-img-placeholder" style="background-image: linear-gradient(135deg, #70a1ff, #1e90ff);"></div>
+                <div class="card-title">La Bretagne 🌊</div>
+                <div class="card-desc">Rando autour de Vannes et Guérande.</div>
+            </div>
+
+            <div class="card-choice" onclick="selectCard(this, 'Les Vosges 🌲')">
+                <div class="card-img-placeholder" style="background-image: linear-gradient(135deg, #7bed9f, #2ed573);"></div>
+                <div class="card-title">Les Vosges 🌲</div>
+                <div class="card-desc">Rando dans les Vosges et Colmar.</div>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 35px;">
+            <button onclick="validerChoix()">Valider mon choix 😍</button>
         </div>
     </div>
 
 </div>
 
 <script>
-    // Petite fonction JavaScript pour cacher la page actuelle et afficher la suivante
+    // Chargement de l'image du bonhomme de neige
+    const snowmanImg = new Image();
+    snowmanImg.src = 'bonhomme-de-neige.png';
+    
+    // Configuration de l'animation Brick Breaker
+    const canvas = document.getElementById('bounceCanvas');
+    const ctx = canvas.getContext('2d');
+    let animRequest;
+    let snowmanX = 100;
+    let snowmanY = 100;
+    let snowmanSize = 130; // Grande taille pour remplir l'écran
+    let speedX = 9; // Vitesse rapide de rebond
+    let speedY = 9;
+    let isAnimating = false;
+    let useEmojiFallback = false;
+
+    snowmanImg.onerror = function() {
+        useEmojiFallback = true;
+    };
+
     function nextPage(pageId) {
         const pages = document.querySelectorAll('.page');
         pages.forEach(page => page.classList.remove('active'));
@@ -189,6 +236,99 @@
         const targetPage = document.getElementById(pageId);
         if (targetPage) {
             targetPage.classList.add('active');
+        }
+    }
+
+    // Gestion du canvas plein écran
+    function startFullscreenAnimation() {
+        if (isAnimating) return;
+        isAnimating = true;
+        canvas.style.display = 'block';
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Départ au milieu
+        snowmanX = canvas.width / 2 - snowmanSize / 2;
+        snowmanY = canvas.height / 2 - snowmanSize / 2;
+        
+        updateAnimation();
+    }
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function updateAnimation() {
+        if (!isAnimating) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Déplacement style Brick Breaker
+        snowmanX += speedX;
+        snowmanY += speedY;
+
+        // Rebonds Haut et Bas
+        if (snowmanY <= 0) {
+            snowmanY = 0;
+            speedY = -speedY;
+        } else if (snowmanY + snowmanSize >= canvas.height) {
+            snowmanY = canvas.height - snowmanSize;
+            speedY = -speedY;
+        }
+
+        // Rebonds Gauche et Droite
+        if (snowmanX <= 0) {
+            snowmanX = 0;
+            speedX = -speedX;
+        } else if (snowmanX + snowmanSize >= canvas.width) {
+            snowmanX = canvas.width - snowmanSize;
+            speedX = -speedX;
+        }
+
+        // Texte géant en arrière-plan
+        ctx.fillStyle = "rgba(43, 108, 176, 0.18)";
+        ctx.font = "bold 70px 'Segoe UI'";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("Trop cool !", canvas.width / 2, canvas.height / 2);
+
+        // Dessin du bonhomme de neige
+        if (!useEmojiFallback && snowmanImg.complete) {
+            ctx.drawImage(snowmanImg, snowmanX, snowmanY, snowmanSize, snowmanSize);
+        } else {
+            ctx.font = snowmanSize + "px Arial";
+            ctx.textAlign = "left";
+            ctx.textBaseline = "top";
+            ctx.fillText("⛄", snowmanX, snowmanY);
+        }
+
+        animRequest = requestAnimationFrame(updateAnimation);
+    }
+
+    function stopFullscreenAnimation() {
+        isAnimating = false;
+        cancelAnimationFrame(animRequest);
+        canvas.style.display = 'none';
+    }
+
+    // Interactivité des cartes
+    let choixSelectionne = "";
+    function selectCard(element, destination) {
+        const cards = document.querySelectorAll('.card-choice');
+        cards.forEach(c => c.classList.remove('selected'));
+        
+        element.classList.add('selected');
+        choixSelectionne = destination;
+    }
+
+    function validerChoix() {
+        if (choixSelectionne === "") {
+            alert("Clique sur l'une des deux cartes pour faire ton choix ! 🗺️");
+        } else {
+            stopFullscreenAnimation(); // On arrête le bonhomme fou à la validation
+            alert("Génial ! Tu as choisi " + choixSelectionne + ". C'est noté pour le mois d'août ! 🎒✨");
         }
     }
 </script>
