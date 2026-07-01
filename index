@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Une Petite Surprise 👑</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdf6f0;
+            color: #4a3e3d;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 60px auto;
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(220, 180, 180, 0.3);
+            border: 1px solid #f3e1dc;
+        }
+        h1 {
+            color: #d46a75;
+            font-size: 24px;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        p {
+            font-size: 16px;
+            color: #7a6e6d;
+        }
+        .page {
+            display: none;
+        }
+        .page.active {
+            display: block;
+        }
+        .btn-group {
+            margin-top: 25px;
+        }
+        button {
+            background-color: #ff8a93;
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 138, 147, 0.3);
+        }
+        button:hover {
+            background-color: #ff6b77;
+            transform: translateY(-2px);
+        }
+        button.secondary {
+            background-color: #b0c4de;
+            box-shadow: 0 4px 10px rgba(176, 196, 222, 0.4);
+        }
+        button.secondary:hover {
+            background-color: #9cb2cd;
+        }
+        .emoji-banner {
+            font-size: 45px;
+            margin: 20px 0;
+        }
+        /* Style et conteneur de l'animation */
+        .animation-container {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            background-color: #f0f8ff;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 1px dashed #b0c4de;
+        }
+        .snowman {
+            position: absolute;
+            bottom: 15px;
+            left: -100px;
+            width: 90px;
+            height: auto;
+            animation: walkAround 7s linear infinite;
+        }
+        .cool-text {
+            font-size: 32px;
+            color: #2b6cb0;
+            font-weight: bold;
+            margin: 15px 0;
+            animation: pulse 1.5s infinite;
+        }
+        /* Animation CSS pour faire voyager le bonhomme de neige d'un bout à l'autre */
+        @keyframes walkAround {
+            0% { left: -100px; transform: scaleX(1); }
+            45% { left: 110%; transform: scaleX(1); }
+            50% { left: 110%; transform: scaleX(-1); }
+            95% { left: -100px; transform: scaleX(-1); }
+            100% { left: -100px; transform: scaleX(1); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div id="page1" class="page active">
+        <h1>Bonjour petite princesse, comment allez-vous ? 👑</h1>
+        <div class="btn-group">
+            <button onclick="nextPage('page2')">Bien 😊</button>
+            <button onclick="nextPage('page2')">Pas bien 😔</button>
+        </div>
+    </div>
+
+    <div id="page2" class="page">
+        <h1>Voulez-vous partir en vacances avec moi ? 😏</h1>
+        <div class="emoji-banner">🏖️ ☀️ 🌊</div>
+        <div class="btn-group">
+            <button onclick="nextPage('pageQ3')">Oui ! 😍</button>
+            <button class="secondary" onclick="nextPage('page_inter1')">Non 😢</button>
+        </div>
+    </div>
+
+    <div id="page_inter1" class="page">
+        <h1>Êtes-vous sûre de ne pas vouloir partir avec moi ? 💔</h1>
+        <div class="btn-group">
+            <button onclick="nextPage('page_inter2')">Oui, sûre 🛑</button>
+            <button class="secondary" onclick="nextPage('page_anim_seule')">Non... 🤔</button>
+        </div>
+    </div>
+
+    <div id="page_inter2" class="page">
+        <h1>Êtes-vous vraiment sûre de ne pas vouloir partir avec moi ? 🥺</h1>
+        <div class="btn-group">
+            <button onclick="nextPage('page_forced')">Oui</button>
+            <button onclick="nextPage('page_forced')">Non</button>
+        </div>
+    </div>
+
+    <div id="page_forced" class="page">
+        <h1>Bon en fait, vous n'avez pas trop le choix, vous partez en vacances avec moi ! ✈️🎒</h1>
+        <div class="cool-text">Trop cool !</div>
+        <div class="animation-container">
+            <img src="bonhomme-de-neige.png" alt="⛄" class="snowman" onerror="this.style.fontSize='60px'; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'></svg>';">
+        </div>
+        <div class="btn-group">
+            <button onclick="nextPage('pageQ3')">Découvrir la suite (Q3) 🎉</button>
+        </div>
+    </div>
+
+    <div id="page_anim_seule" class="page">
+        <div class="cool-text">Trop cool !</div>
+        <div class="animation-container">
+            <img src="bonhomme-de-neige.png" alt="⛄" class="snowman" onerror="this.style.fontSize='60px'; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'></svg>';">
+        </div>
+        <div class="btn-group">
+            <button onclick="nextPage('pageQ3')">Passer à la suite (Q3) 🚀</button>
+        </div>
+    </div>
+
+    <div id="pageQ3" class="page">
+        <h1>Bienvenue à la Question 3 ! 🎉</h1>
+        <p>Félicitations, vos valises sont prêtes pour le départ ! ✨</p>
+        <div class="btn-group">
+            <button onclick="alert('À vous de jouer pour écrire la suite de l\'histoire !')">À suivre...</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // Petite fonction JavaScript pour cacher la page actuelle et afficher la suivante
+    function nextPage(pageId) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+        
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+        }
+    }
+</script>
+
+</body>
+</html>
