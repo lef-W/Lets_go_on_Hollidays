@@ -76,6 +76,16 @@
             font-size: 45px;
             margin: 20px 0;
         }
+        
+        /* Style personnalisé pour l'image de la page 1 */
+        .page1-image {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
 
         /* --- STYLES DES CARTES INTERACTIVES --- */
         .cards-container {
@@ -131,7 +141,7 @@
             width: 100vw;
             height: 100vh;
             z-index: 1;
-            pointer-events: none; /* Permet de cliquer à travers sur les boutons */
+            pointer-events: none;
             display: none;
         }
     </style>
@@ -142,7 +152,10 @@
 
 <div class="container">
 
+    <!-- PAGE 1 -->
     <div id="page1" class="page active">
+        <!-- Votre image s'affiche ici -->
+        <img src="image.png" alt="Image d'accueil" class="page1-image" onerror="this.style.display='none';">
         <h1>Bonjour petite princesse, comment allez-vous ? 👑</h1>
         <div class="btn-group">
             <button onclick="nextPage('page2')">Bien 😊</button>
@@ -150,38 +163,52 @@
         </div>
     </div>
 
+    <!-- PAGE 2 (Q2) -->
     <div id="page2" class="page">
         <h1>Voulez-vous partir en vacances avec moi ? 😏</h1>
         <div class="emoji-banner">🏖️ ☀️ 🌊</div>
         <div class="btn-group">
             <button onclick="nextPage('pageQ3')">Oui ! 😍</button>
-            <button class="secondary" onclick="startFullscreenAnimation(); nextPage('page_inter1');">Non 😢</button>
+            <button class="secondary" onclick="nextPage('page_inter1')">Non 😢</button>
         </div>
     </div>
 
+    <!-- PAGE INTERMÉDIAIRE 1 -->
     <div id="page_inter1" class="page">
         <h1>Êtes-vous sûre de ne pas vouloir partir avec moi ? 💔</h1>
         <div class="btn-group">
             <button onclick="nextPage('page_inter2')">Oui, sûre 🛑</button>
-            <button class="secondary" onclick="nextPage('pageQ3')">Non... 🤔</button>
+            <button class="secondary" onclick="startFullscreenAnimation(); nextPage('page_anim_seule');">Non... 🤔</button>
         </div>
     </div>
 
+    <!-- PAGE INTERMÉDIAIRE 2 -->
     <div id="page_inter2" class="page">
         <h1>Êtes-vous vraiment sûre de ne pas vouloir partir avec moi ? 🥺</h1>
         <div class="btn-group">
-            <button onclick="nextPage('page_forced')">Oui</button>
-            <button onclick="nextPage('page_forced')">Non</button>
+            <button onclick="startFullscreenAnimation(); nextPage('page_forced')">Oui</button>
+            <button onclick="startFullscreenAnimation(); nextPage('page_forced')">Non</button>
         </div>
     </div>
 
+    <!-- PAGE DE SÉCURITÉ : LE CHOIX FORCÉ -->
     <div id="page_forced" class="page">
         <h1>Bon en fait, vous n'avez pas trop le choix, vous partez en vacances avec moi ! ✈️🎒</h1>
         <div class="btn-group">
-            <button onclick="nextPage('pageQ3')">Découvrir la suite (Q3) 🎉</button>
+            <button onclick="stopFullscreenAnimation(); nextPage('pageQ3')">Découvrir la suite (Q3) 🎉</button>
         </div>
     </div>
 
+    <!-- PAGE ANIMATION SEULE -->
+    <div id="page_anim_seule" class="page">
+        <h1 style="color: #2b6cb0;">Trop cool ! 🎉</h1>
+        <p>Préparation des valises en cours...</p>
+        <div class="btn-group">
+            <button onclick="stopFullscreenAnimation(); nextPage('pageQ3')">Passer à la suite (Q3) 🚀</button>
+        </div>
+    </div>
+
+    <!-- PAGE FINALE Q3 (RANDONNÉE & CARTES INTERACTIVES) -->
     <div id="pageQ3" class="page">
         <h1>Je propose une randonnée du samedi 1er août au lundi 3 ou mardi 4 août 🧭</h1>
         <p style="font-weight: bold; color: #ff8a93; margin-top: -10px;">(deux jours après la fin de ton camp)</p>
@@ -209,18 +236,16 @@
 </div>
 
 <script>
-    // Chargement de l'image du bonhomme de neige
     const snowmanImg = new Image();
     snowmanImg.src = 'bonhomme-de-neige.png';
     
-    // Configuration de l'animation Brick Breaker
     const canvas = document.getElementById('bounceCanvas');
     const ctx = canvas.getContext('2d');
     let animRequest;
     let snowmanX = 100;
     let snowmanY = 100;
-    let snowmanSize = 130; // Grande taille pour remplir l'écran
-    let speedX = 9; // Vitesse rapide de rebond
+    let snowmanSize = 140; 
+    let speedX = 9; 
     let speedY = 9;
     let isAnimating = false;
     let useEmojiFallback = false;
@@ -239,7 +264,6 @@
         }
     }
 
-    // Gestion du canvas plein écran
     function startFullscreenAnimation() {
         if (isAnimating) return;
         isAnimating = true;
@@ -248,7 +272,6 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // Départ au milieu
         snowmanX = canvas.width / 2 - snowmanSize / 2;
         snowmanY = canvas.height / 2 - snowmanSize / 2;
         
@@ -265,36 +288,21 @@
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        // Déplacement style Brick Breaker
         snowmanX += speedX;
         snowmanY += speedY;
 
-        // Rebonds Haut et Bas
-        if (snowmanY <= 0) {
-            snowmanY = 0;
-            speedY = -speedY;
-        } else if (snowmanY + snowmanSize >= canvas.height) {
-            snowmanY = canvas.height - snowmanSize;
-            speedY = -speedY;
-        }
+        if (snowmanY <= 0) { snowmanY = 0; speedY = -speedY; }
+        else if (snowmanY + snowmanSize >= canvas.height) { snowmanY = canvas.height - snowmanSize; speedY = -speedY; }
 
-        // Rebonds Gauche et Droite
-        if (snowmanX <= 0) {
-            snowmanX = 0;
-            speedX = -speedX;
-        } else if (snowmanX + snowmanSize >= canvas.width) {
-            snowmanX = canvas.width - snowmanSize;
-            speedX = -speedX;
-        }
+        if (snowmanX <= 0) { snowmanX = 0; speedX = -speedX; }
+        else if (snowmanX + snowmanSize >= canvas.width) { snowmanX = canvas.width - snowmanSize; speedX = -speedX; }
 
-        // Texte géant en arrière-plan
         ctx.fillStyle = "rgba(43, 108, 176, 0.18)";
         ctx.font = "bold 70px 'Segoe UI'";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillText("Trop cool !", canvas.width / 2, canvas.height / 2);
 
-        // Dessin du bonhomme de neige
         if (!useEmojiFallback && snowmanImg.complete) {
             ctx.drawImage(snowmanImg, snowmanX, snowmanY, snowmanSize, snowmanSize);
         } else {
@@ -310,10 +318,10 @@
     function stopFullscreenAnimation() {
         isAnimating = false;
         cancelAnimationFrame(animRequest);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         canvas.style.display = 'none';
     }
 
-    // Interactivité des cartes
     let choixSelectionne = "";
     function selectCard(element, destination) {
         const cards = document.querySelectorAll('.card-choice');
@@ -327,7 +335,6 @@
         if (choixSelectionne === "") {
             alert("Clique sur l'une des deux cartes pour faire ton choix ! 🗺️");
         } else {
-            stopFullscreenAnimation(); // On arrête le bonhomme fou à la validation
             alert("Génial ! Tu as choisi " + choixSelectionne + ". C'est noté pour le mois d'août ! 🎒✨");
         }
     }
